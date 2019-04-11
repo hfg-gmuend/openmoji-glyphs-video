@@ -1,0 +1,15 @@
+{
+  "name": "openmoji-video-glyphs",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^2.4.1",
+    "midi-writer-js": "^1.7.1"
+  }
+}
