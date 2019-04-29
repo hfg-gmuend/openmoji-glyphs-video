@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const { createCanvas, loadImage, Image } = require('canvas');
+const chroma = require('chroma-js');
+const { groupBy } = require('lodash');
 
 let openmojis = require('./openmoji-emoji12.json');
 const canvas = createCanvas(1920, 1080);
@@ -8,26 +10,49 @@ const ctx = canvas.getContext('2d');
 const svgFolder = '../openmoji/color/svg';
 const framesFolder = './frames';
 
+// background colors for each emoji group (category)
 const bgColors = {
-  "smileys-emotion": "#e67a94",
-  "people-body": "#61b2e4",
-  "component": "#d0cfce",
-  "animals-nature": "#5c9e31",
+  "smileys-emotion": "#61b2e4",
+  "people-body": "#ffa7c0",
+  "animals-nature": "#b1cc33",
   "food-drink": "#ea5a47",
-  "travel-places": "#92d3f5",
-  "activities": "#d22f27",
-  "objects": "#b399c8",
-  "symbols": "#ffa7c0",
-  "flags": "#9b9b9a"
+  "travel-places": "#b399c8",
+  "activities": "#61b2e4",
+  "objects": "#fcea2b",
+  "symbols": "#f4aa41",
+  "flags": "#9b9b9a",
+  "extras-openmoji": "#d0cfce"
 };
+let bgColorsEnd = {};
+for (var key in bgColors) {
+  if (bgColors.hasOwnProperty(key)) {
+    bgColorsEnd[key] = chroma(bgColors[key]).alpha(0.5);
+  }
+}
 
-// openmojis = [openmojis[0]];
+// enhance openmojis with groupIndex and groupLength property
+const grouped = groupBy(openmojis, 'group');
+let currentGroup = '';
+let counter;
+openmojis = openmojis.map((om, i) => {
+  if (currentGroup !== om.group) {
+    counter = 0
+    currentGroup = om.group;
+  }
+  om.groupIndex = counter;
+  om.groupLength = grouped[om.group].length;
+  counter++;
+  return om;
+});
 
+// draw frames
 openmojis.forEach((om, i) => {
-  console.log(om.emoji, om.hexcode);
+  console.log(om.emoji, om.hexcode, i);
   const svgFile = path.join(svgFolder, om.hexcode + '.svg');
 
-  background(ctx, bgColors[om.group]);
+  background(ctx, 'white');
+  const lerpColor = chroma.scale([bgColors[om.group], bgColorsEnd[om.group]]);
+  background(ctx, lerpColor(om.groupIndex/om.groupLength));
   ctx.fillStyle = 'black';
   ctx.font = 'bold 25px Helvetica';
 
@@ -39,9 +64,9 @@ openmojis.forEach((om, i) => {
   }
 
   // text labels
-  ctx.fillText('U+' + om.hexcode +'\n'+ om.openmoji_author, 56, 960);
-  ctx.fillText('OpenMoji' +'\n'+ om.annotation, 960, 960);
-  ctx.fillText(om.group +'\n'+ om.subgroups, 1600, 960);
+  ctx.fillText('OpenMoji\n' + om.openmoji_author, 56, 960);
+  ctx.fillText('U+' + om.hexcode +'\n'+ formatTitle(om.annotation), 676, 960);
+  ctx.fillText(formatTitle(om.group) +'\n'+ formatTitle(om.subgroups), 1600, 960);
 
   // save frame
   const frameName = String(i).padStart(5, '0') + '.png';
@@ -65,6 +90,16 @@ function drawEmoji(ctx, filepath) {
   img.src = filepath;
   img.width = 640;
   img.height = 640;
-  ctx.drawImage(img, 640, 220);
+  ctx.drawImage(img, 640, 220 - 16);
+}
 
+function formatTitle(str) {
+  // replace all '-' with ' '
+  str = str.replace(/-/g, ' ');
+  // title case
+  str = str.toLowerCase().split(' ');
+  for (var i = 0; i < str.length; i++) {
+    str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+  }
+  return str.join(' ');
 }
