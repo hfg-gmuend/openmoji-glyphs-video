@@ -14,6 +14,7 @@ const framesFolder = './frames';
 const bgColors = {
   "smileys-emotion": "#61b2e4",
   "people-body": "#ffa7c0",
+  "component": "#d22f27",
   "animals-nature": "#b1cc33",
   "food-drink": "#ea5a47",
   "travel-places": "#b399c8",
