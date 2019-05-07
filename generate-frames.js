@@ -4,7 +4,7 @@ const { createCanvas, loadImage, Image } = require('canvas');
 const chroma = require('chroma-js');
 const { groupBy } = require('lodash');
 
-let openmojis = require('./openmoji-emoji12.json');
+let openmojis = require('./openmoji.json');
 const canvas = createCanvas(1920, 1080);
 const ctx = canvas.getContext('2d');
 const svgFolder = '../openmoji/color/svg';

@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const MidiWriter = require('midi-writer-js');
 
-const openmojis = require('./openmoji-emoji12.json');
+const openmojis = require('./openmoji.json');
 
 
 // MidiWriterJS defaults to 128 ticks per beat. If your song is 120bpm there are 15360 ticks every minute (tpb * bpm)
