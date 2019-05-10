@@ -14,7 +14,7 @@ const framesFolder = './frames';
 const bgColors = {
   "smileys-emotion": "#61b2e4",
   "people-body": "#ffa7c0",
-  "component": "#d22f27",
+  "component": "#3f3f3f",
   "animals-nature": "#b1cc33",
   "food-drink": "#ea5a47",
   "travel-places": "#b399c8",
@@ -48,7 +48,8 @@ openmojis = openmojis.map((om, i) => {
 
 // draw frames
 openmojis.forEach((om, i) => {
-  console.log(om.emoji, om.hexcode, i);
+  const progress = Math.round(i/openmojis.length*100);
+  console.log(om.emoji, om.hexcode, progress + '%');
   const svgFile = path.join(svgFolder, om.hexcode + '.svg');
 
   background(ctx, 'white');
