@@ -22,13 +22,31 @@ tracks.push(createTrack(notesEmojis, 'Emojis'));
 let notesSkintones = [];
 openmojis.forEach((om, i) => {
 	if (om.skintone !== "") {
-		notesSkintones.push(
-			new MidiWriter.NoteEvent({
-				pitch: 64 + om.skintone,
-				duration: '32',
-				startTick: 128/4*i
-			})
-		);
+		if (om.skintone_combination === 'multiple') {
+			const skintones = om.skintone.split(',');
+			notesSkintones.push(
+				new MidiWriter.NoteEvent({
+					pitch: 64 + skintones[0],
+					duration: '32',
+					startTick: 128/4*i
+				})
+			);
+			notesSkintones.push(
+				new MidiWriter.NoteEvent({
+					pitch: 96 + skintones[1],
+					duration: '32',
+					startTick: 128/4*i
+				})
+			);
+		} else {
+			notesSkintones.push(
+				new MidiWriter.NoteEvent({
+					pitch: 64 + om.skintone,
+					duration: '32',
+					startTick: 128/4*i
+				})
+			);
+		}
 	}
 });
 tracks.push(createTrack(notesSkintones, 'Skintones'));
@@ -41,7 +59,7 @@ openmojis.forEach((om, i) => {
 		notesNextGroup.push(
 			new MidiWriter.NoteEvent({
 				pitch: 64 + groupCount,
-				duration: '1',
+				duration: '2',
 				startTick: 128/4*i
 			})
 		);
